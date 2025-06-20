@@ -83,27 +83,27 @@ void Enemy::updateMovement()
 	{
 	//visualMoveDirection = movingDirection;
 
-	//if (sf::Keyboard::isKeyPressed(sf::Keyboard::L))	MANUAL WALL COLLISION TEST
-	if (this->wallHit == true)
-	{
-		this->movingDirection = 1;
-	}
+		//if (sf::Keyboard::isKeyPressed(sf::Keyboard::L))	MANUAL WALL COLLISION TEST
+		if (this->wallHit == true)
+		{
+			this->movingDirection = 1;
+		}
 
-	this->currentVelocityEnemy = rigidBodyEnemy.moveDirectionSpeed(this->currentVelocityEnemy, this->movingDirection);
-
-
-	sf::Vector2f currentPosition = this->enemyShape.getPosition();
-	currentPosition.x += this->currentVelocityEnemy;
-	if (currentVelocityEnemy > 0)	//maakt het direction onafhankelijk (moet beter later)
-		currentPosition.y += this->currentVelocityEnemy;
-	else
-		currentPosition.y -= this->currentVelocityEnemy;
-	this->enemyShape.setPosition(currentPosition);
-	//this->playerSprite.setPosition(currentPosition);
+		this->currentVelocityEnemy = rigidBodyEnemy.moveDirectionSpeed(this->currentVelocityEnemy, this->movingDirection);
 
 
-	if (this->wallHit == true)
-		this->wallHit = false;
+		sf::Vector2f currentPosition = this->enemyShape.getPosition();
+		currentPosition.x += this->currentVelocityEnemy;
+		if (currentVelocityEnemy > 0)	//maakt het direction onafhankelijk (moet beter later)
+			currentPosition.y += this->currentVelocityEnemy;
+		else
+			currentPosition.y -= this->currentVelocityEnemy;
+		this->enemyShape.setPosition(currentPosition);
+		//this->playerSprite.setPosition(currentPosition);
+
+
+		if (this->wallHit == true)
+			this->wallHit = false;
 	}
 	else if (this->movingDirection == 1)	//Right
 	{
