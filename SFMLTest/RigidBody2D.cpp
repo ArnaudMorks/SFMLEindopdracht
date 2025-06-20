@@ -1,5 +1,5 @@
 #include "RigidBody2D.h"
-
+//test
 
 void RigidBody2D::initializeVariables(float mass, float ownForce, float maxVelocity)
 {
