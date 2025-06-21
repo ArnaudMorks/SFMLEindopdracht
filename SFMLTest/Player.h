@@ -9,7 +9,7 @@ private:
 	int textureRectPlayerPositionXYSize;
 	float spritePlayerXYSize;		//van spritesheet; grootte per plaatje is 16x16
 	float shapePlayerXYSize;		//hitbox. "setScale" en "setSize" zijn floats
-	Vector2D forcePlayer;
+	const Vector2D forcePlayer = Vector2D(140.f, 0.f);
 	float massPlayer;
 	Vector2D currentVelocityPlayer;
 	Vector2D maxVelocityPlayer;
@@ -49,8 +49,8 @@ public:
 
 	//Public Functions
 	void updateInput();
-	void updateWindowBoundsCollision(const sf::RenderTarget* target);
-	void update(const sf::RenderTarget* target);
+	void updateWindowBoundsCollision();
+	void update();
 	void render(sf::RenderTarget* target);
 	//void renderPlayer();
 };

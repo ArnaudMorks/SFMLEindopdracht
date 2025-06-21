@@ -21,7 +21,7 @@ private:
 	//float bounceForce;	//hoeveelheid force die je hebt door tegen de muur te stuiteren
 	float mA;			//massa acceleratie
 	float fF;			//frictie ownForce		mb illegale namen
-	float netForce;
+	//float netForce;
 
 	Vector2D ownForce;		//kant waar je heen wilt (in Newtons)	wordt meegegeven door "Player"
 	Vector2D acceleration;			//acceleratie
@@ -29,6 +29,8 @@ private:
 	Vector2D maxVelocity;
 
 	int moveDirectionX;
+
+	const float forceLostOnBounce = 0.15f;
 
 
 public:

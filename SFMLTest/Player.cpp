@@ -9,7 +9,8 @@ void Player::initializeVariables()
 	this->shapePlayerXYSize = 64.f;
 
 	//PlayerRigidBodyVariables
-	this->forcePlayer.x = 140.f;
+	//this->forcePlayer.x = 140.f;
+	bodyPlayer.forceObject = this->forcePlayer;
 	this->massPlayer = 5.f;
 	this->currentVelocityPlayer.x = 0.f;
 	this->maxVelocityPlayer.x = 30.f;
@@ -33,7 +34,7 @@ void Player::initializeVariables()
 	startPositionPlayer = Vector2D(800, 900);
 
 	bodyPlayer.currentPosition = startPositionPlayer;
-	rigidBodyPlayer.initializeVariables(massPlayer, forcePlayer, maxVelocityPlayer);
+	rigidBodyPlayer.initializeVariables(massPlayer, bodyPlayer.forceObject, maxVelocityPlayer);
 }
 
 void Player::initializeSprite()
@@ -58,7 +59,7 @@ void Player::initializeShape()
 
 Player::Player(float x, float y)
 {
-	this->shapeAndSpritePosition(800, 900);
+	this->shapeAndSpritePosition(startPositionPlayer.x, startPositionPlayer.y);
 
 	this->initializeVariables();
 	this->initializeSprite();
@@ -152,8 +153,8 @@ void Player::updateInput()
 		//sf::Vector2f currentPosition = this->playerShape.getPosition();//LATER EIGEN VECTOR2D VAN MAKEN!!!
 
 		bodyPlayer.currentPosition.x += this->currentVelocityPlayer.x;
-		this->playerShape.setPosition(bodyPlayer.currentPosition.x, bodyPlayer.currentPosition.y);
-		this->playerSprite.setPosition(bodyPlayer.currentPosition.x, bodyPlayer.currentPosition.y);
+		//this->playerShape.setPosition(bodyPlayer.currentPosition.x, bodyPlayer.currentPosition.y);
+		//this->playerSprite.setPosition(bodyPlayer.currentPosition.x, bodyPlayer.currentPosition.y);
 
 		moving = true;
 
@@ -175,8 +176,8 @@ void Player::updateInput()
 		//sf::Vector2f currentPosition = this->playerShape.getPosition();//LATER EIGEN VECTOR2D VAN MAKEN!!!
 
 		bodyPlayer.currentPosition.x += this->currentVelocityPlayer.x;
-		this->playerShape.setPosition(bodyPlayer.currentPosition.x, bodyPlayer.currentPosition.y);
-		this->playerSprite.setPosition(bodyPlayer.currentPosition.x, bodyPlayer.currentPosition.y);
+		//this->playerShape.setPosition(bodyPlayer.currentPosition.x, bodyPlayer.currentPosition.y);
+		//this->playerSprite.setPosition(bodyPlayer.currentPosition.x, bodyPlayer.currentPosition.y);
 
 		moving = true;
 
@@ -242,21 +243,23 @@ void Player::updateInput()
 		}
 		//std::cout << positionPlusVelocity << std::endl;
 
-		this->playerShape.setPosition(bodyPlayer.currentPosition.x, bodyPlayer.currentPosition.y);
-		this->playerSprite.setPosition(bodyPlayer.currentPosition.x, bodyPlayer.currentPosition.y);
-		}
+		//this->playerShape.setPosition(bodyPlayer.currentPosition.x, bodyPlayer.currentPosition.y);
+		//this->playerSprite.setPosition(bodyPlayer.currentPosition.x, bodyPlayer.currentPosition.y);
+	}
 
+	this->playerSprite.setPosition(bodyPlayer.currentPosition.x, bodyPlayer.currentPosition.y);
+	this->playerShape.setPosition(bodyPlayer.currentPosition.x, bodyPlayer.currentPosition.y);
 
 	this->updateSprite(moving);
 	this->directionChangeSprite(visualMoveDirection);
 
 }
 
-void Player::updateWindowBoundsCollision(const sf::RenderTarget* target)
+void Player::updateWindowBoundsCollision()
 {
 	//Left
 	//sf::Vector2f playerPosition = this->playerShape.getPosition();	//eigen vector2 maken
-	if (this->playerShape.getGlobalBounds().left <= 0.f)
+	if (bodyPlayer.currentPosition.x <= 0.f)
 	{
 		this->wallHit = true;
 		int slipDirection = 0;
@@ -268,7 +271,7 @@ void Player::updateWindowBoundsCollision(const sf::RenderTarget* target)
 		bodyPlayer.currentPosition.x += this->currentVelocityPlayer.x;
 
 	}//Right
-	else if (this->playerShape.getGlobalBounds().left + this->playerShape.getGlobalBounds().width >= target->getSize().x)
+	else if (bodyPlayer.currentPosition.x >= 1900)
 	{
 		this->wallHit = true;
 		int slipDirection = 1;
@@ -283,10 +286,10 @@ void Player::updateWindowBoundsCollision(const sf::RenderTarget* target)
 
 }
 
-void Player::update(const sf::RenderTarget* target)
+void Player::update()
 {
 	//Window bounds collision
-	this->updateWindowBoundsCollision(target);
+	this->updateWindowBoundsCollision();
 
 	this->updateInput();
 
@@ -295,7 +298,7 @@ void Player::update(const sf::RenderTarget* target)
 
 void Player::render(sf::RenderTarget* target)
 {
-	//target->draw(this->playerShape);			//is er om te size te berekenen; moet onzichtbaar zijn
+	//target->draw(this->playerShape);			//is er om te size te berekenen; moet onzichtbaar zijn; uitcommenten voor testen
 	target->draw(this->playerSprite);
 }
 

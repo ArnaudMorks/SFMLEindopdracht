@@ -22,13 +22,13 @@ void RigidBody2D::initializeVariables(float mass, Vector2D ownForce, Vector2D ma
 		mA = 0;
 		acceleration.x = 0;
 	}
-	this->netForce = this->ownForce.x - this->fF;
+	//this->netForce = this->ownForce.x - this->fF;
 
 	///*TEST acceleration*/ this->acceleration = 1.f;
 	this->maxVelocity.x = maxVelocity.x;
 	//this->maxVelocity = 
 
-	moveDirectionX = 0;
+	this->moveDirectionX = 0;
 }
 
 RigidBody2D::RigidBody2D()
@@ -110,11 +110,13 @@ float RigidBody2D::bounceAgainstWall(Vector2D currentVelocity, int slipDircetion
 {
 	this->moveDirectionX = slipDircetion;
 
-	if (this->currentVelocity.x < 0 && slipDircetion == 0)
+	/*if (this->currentVelocity.x < 0 && slipDircetion == 0)
 		this->currentVelocity.x = -this->currentVelocity.x * (1.f - 0.15f);		//"0.15f" = force lost bij stuiteren tegen de muur
 	else if (this->currentVelocity.x > 0 && slipDircetion == 1)
-		this->currentVelocity.x = -this->currentVelocity.x * (1.f - 0.15f);		//"0.15f" = force lost bij stuiteren tegen de muur
+		this->currentVelocity.x = -this->currentVelocity.x * (1.f - 0.15f);*/		//"0.15f" = force lost bij stuiteren tegen de muur
 
+	if ((this->currentVelocity.x < 0 && slipDircetion == 0) || (this->currentVelocity.x > 0 && slipDircetion == 1))
+		this->currentVelocity.x = -this->currentVelocity.x * (1.f - this->forceLostOnBounce);
 
 	return this->currentVelocity.x;
 }

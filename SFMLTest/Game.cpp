@@ -168,12 +168,15 @@ void Game::updateCollision()
 	//Check the collision
 	for (int i = 0; i < maxEnemies - 1; i++)
 	{
-		if (this->player.getPlayerShape().getGlobalBounds()
+		/*if (this->player.getPlayerShape().getGlobalBounds()			ORIGINAL COLLISION
 			.intersects(this->enemies[i].getEnemyShape().getGlobalBounds()))
 		{
 			this->enemies[i].enemyDespawn();	//nu doet dit niks; voor als er later "lives" worden toegevoegt
 			lost = true;
-		}
+		}*/
+
+
+
 
 		if (this->enemies[i].getEnemyShape().getPosition().y > this->windowPointer->getSize().y)
 		{
@@ -235,7 +238,7 @@ void Game::update()
 		}
 	}
 
-	this->player.update(this->windowPointer);	//paramater is een pointer
+	this->player.update();	//paramater is een pointer
 	this->updateCollision();
 }
 
