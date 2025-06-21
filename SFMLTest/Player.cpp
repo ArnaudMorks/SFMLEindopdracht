@@ -9,10 +9,10 @@ void Player::initializeVariables()
 	this->shapePlayerXYSize = 64.f;
 
 	//PlayerRigidBodyVariables
-	this->forcePlayer = 140.f;
+	this->forcePlayer.x = 140.f;
 	this->massPlayer = 5.f;
-	this->currentVelocityPlayer = 0.f;
-	this->maxVelocityPlayer = 30.f;
+	this->currentVelocityPlayer.x = 0.f;
+	this->maxVelocityPlayer.x = 30.f;
 
 	this->wallHit = false;
 
@@ -30,6 +30,9 @@ void Player::initializeVariables()
 		std::cout << antiJitterVectorArray[i] << std::endl;
 	}
 
+	startPositionPlayer = Vector2D(800, 900);
+
+	bodyPlayer.currentPosition = startPositionPlayer;
 	rigidBodyPlayer.initializeVariables(massPlayer, forcePlayer, maxVelocityPlayer);
 }
 
@@ -143,13 +146,14 @@ void Player::updateInput()
 			movingDirection = 1;
 		}
 
-		this->currentVelocityPlayer = rigidBodyPlayer.moveDirectionSpeed(this->currentVelocityPlayer, movingDirection);
+		this->currentVelocityPlayer.x = rigidBodyPlayer.moveDirectionSpeed(this->currentVelocityPlayer, movingDirection);
 
 
-		sf::Vector2f currentPosition = this->playerShape.getPosition();
-		currentPosition.x += this->currentVelocityPlayer;
-		this->playerShape.setPosition(currentPosition);
-		this->playerSprite.setPosition(currentPosition);
+		//sf::Vector2f currentPosition = this->playerShape.getPosition();//LATER EIGEN VECTOR2D VAN MAKEN!!!
+
+		bodyPlayer.currentPosition.x += this->currentVelocityPlayer.x;
+		this->playerShape.setPosition(bodyPlayer.currentPosition.x, bodyPlayer.currentPosition.y);
+		this->playerSprite.setPosition(bodyPlayer.currentPosition.x, bodyPlayer.currentPosition.y);
 
 		moving = true;
 
@@ -166,12 +170,13 @@ void Player::updateInput()
 			movingDirection = 0;
 		}
 
-		this->currentVelocityPlayer = rigidBodyPlayer.moveDirectionSpeed(this->currentVelocityPlayer, movingDirection);
+		this->currentVelocityPlayer.x = rigidBodyPlayer.moveDirectionSpeed(this->currentVelocityPlayer, movingDirection);
 
-		sf::Vector2f currentPosition = this->playerShape.getPosition();
-		currentPosition.x += this->currentVelocityPlayer;
-		this->playerShape.setPosition(currentPosition);
-		this->playerSprite.setPosition(currentPosition);
+		//sf::Vector2f currentPosition = this->playerShape.getPosition();//LATER EIGEN VECTOR2D VAN MAKEN!!!
+
+		bodyPlayer.currentPosition.x += this->currentVelocityPlayer.x;
+		this->playerShape.setPosition(bodyPlayer.currentPosition.x, bodyPlayer.currentPosition.y);
+		this->playerSprite.setPosition(bodyPlayer.currentPosition.x, bodyPlayer.currentPosition.y);
 
 		moving = true;
 
@@ -183,8 +188,10 @@ void Player::updateInput()
 
 	if (moving == false)
 	{
-		sf::Vector2f currentPosition = this->playerShape.getPosition();
-		float positionPlusVelocity = (currentPosition.x + this->currentVelocityPlayer) - currentPosition.x;
+		//sf::Vector2f currentPosition = this->playerShape.getPosition();
+		
+		float positionPlusVelocity = (bodyPlayer.currentPosition.x + this->currentVelocityPlayer.x)
+			- bodyPlayer.currentPosition.x;
 
 		if (positionPlusVelocity < 0.5f && positionPlusVelocity > -0.5f)
 		{
@@ -228,15 +235,15 @@ void Player::updateInput()
 			else if ((positionPlusVelocity > 0.f))	//Rechts
 				movingDirection = 1;
 
-			this->currentVelocityPlayer = rigidBodyPlayer.moveDirectionStopping(currentVelocityPlayer, movingDirection,
+			this->currentVelocityPlayer.x = rigidBodyPlayer.moveDirectionStopping(currentVelocityPlayer, movingDirection,
 				this->wallHit);
-			currentPosition.x += this->currentVelocityPlayer;
+			bodyPlayer.currentPosition.x += this->currentVelocityPlayer.x;
 
 		}
 		//std::cout << positionPlusVelocity << std::endl;
 
-		this->playerShape.setPosition(currentPosition);
-		this->playerSprite.setPosition(currentPosition);
+		this->playerShape.setPosition(bodyPlayer.currentPosition.x, bodyPlayer.currentPosition.y);
+		this->playerSprite.setPosition(bodyPlayer.currentPosition.x, bodyPlayer.currentPosition.y);
 		}
 
 
@@ -248,27 +255,27 @@ void Player::updateInput()
 void Player::updateWindowBoundsCollision(const sf::RenderTarget* target)
 {
 	//Left
-	sf::Vector2f playerPosition = this->playerShape.getPosition();	//eigen vector2 maken
+	//sf::Vector2f playerPosition = this->playerShape.getPosition();	//eigen vector2 maken
 	if (this->playerShape.getGlobalBounds().left <= 0.f)
 	{
 		this->wallHit = true;
 		int slipDirection = 0;
-		this->currentVelocityPlayer = rigidBodyPlayer.bounceAgainstWall(this->currentVelocityPlayer, slipDirection);
+		this->currentVelocityPlayer.x = rigidBodyPlayer.bounceAgainstWall(this->currentVelocityPlayer, slipDirection);
 
-		sf::Vector2f currentPosition = this->playerShape.getPosition();
-		//std::cout << currentPosition.x << std::endl;
-		currentPosition.x += this->currentVelocityPlayer;
-		//std::cout << currentPosition.x << std::endl;
-		//this->playerShape.setPosition(0.f, playerPosition.y);
+		//sf::Vector2f currentPosition = this->playerShape.getPosition();
+
+
+		bodyPlayer.currentPosition.x += this->currentVelocityPlayer.x;
+
 	}//Right
 	else if (this->playerShape.getGlobalBounds().left + this->playerShape.getGlobalBounds().width >= target->getSize().x)
 	{
 		this->wallHit = true;
 		int slipDirection = 1;
-		this->currentVelocityPlayer = rigidBodyPlayer.bounceAgainstWall(this->currentVelocityPlayer, slipDirection);
+		this->currentVelocityPlayer.x = rigidBodyPlayer.bounceAgainstWall(this->currentVelocityPlayer, slipDirection);
 
-		sf::Vector2f currentPosition = this->playerShape.getPosition();
-		currentPosition.x += this->currentVelocityPlayer;
+		//sf::Vector2f currentPosition = this->playerShape.getPosition();
+		bodyPlayer.currentPosition.x += this->currentVelocityPlayer.x;
 		//this->playerShape.setPosition(target->getSize().x, playerPosition.y);
 	}
 	else
@@ -282,6 +289,8 @@ void Player::update(const sf::RenderTarget* target)
 	this->updateWindowBoundsCollision(target);
 
 	this->updateInput();
+
+	std::cout << this->bodyPlayer.currentPosition.x << std::endl;
 }
 
 void Player::render(sf::RenderTarget* target)

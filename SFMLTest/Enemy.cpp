@@ -7,10 +7,10 @@ void Enemy::initializeVariables()
 	this->shapeEnemyXYSize = 0.5f;	//"float * int" converts "int" to float
 
 	//PlayerRigidBodyVariables
-	this->forceEnemy = 20.f;
+	this->forceEnemy.x = 20.f;
 	this->massEnemy = 2.f;
-	this->currentVelocityEnemy = 0.f;
-	this->maxVelocityEnemy = 30.f;
+	this->currentVelocityEnemy.x = 0.f;
+	this->maxVelocityEnemy.x = 30.f;
 
 	this->movingDirection = 3;		//"0" = links, "1" = rechts, "2" is stoppen, "3" is NIET veranderen van huidige richting (basis)
 
@@ -41,7 +41,7 @@ void Enemy::enemySpawn(float randomXPosition)
 {
 	this->enemySpawned = true;
 	//std::cout << enemySpawned << std::endl;
-	this->currentVelocityEnemy = 0.f;
+	this->currentVelocityEnemy = Vector2D(0.f, 0.f);
 	//"rand" pakt alleen een "int", "static_cast" maakt op het laatst weer een "float"
 	this->enemyShape.setPosition(randomXPosition, -100.f);
 	this->movingDirection = rand() % 2;		//random kant
@@ -89,15 +89,15 @@ void Enemy::updateMovement()
 			this->movingDirection = 1;
 		}
 
-		this->currentVelocityEnemy = rigidBodyEnemy.moveDirectionSpeed(this->currentVelocityEnemy, this->movingDirection);
+		this->currentVelocityEnemy.x = rigidBodyEnemy.moveDirectionSpeed(this->currentVelocityEnemy, this->movingDirection);
 
 
 		sf::Vector2f currentPosition = this->enemyShape.getPosition();
-		currentPosition.x += this->currentVelocityEnemy;
-		if (currentVelocityEnemy > 0)	//maakt het direction onafhankelijk (moet beter later)
-			currentPosition.y += this->currentVelocityEnemy;
+		currentPosition.x += this->currentVelocityEnemy.x;
+		if (currentVelocityEnemy.y > 0)	//maakt het direction onafhankelijk (moet beter later)
+			currentPosition.y += this->currentVelocityEnemy.y;
 		else
-			currentPosition.y -= this->currentVelocityEnemy;
+			currentPosition.y -= this->currentVelocityEnemy.y;
 		this->enemyShape.setPosition(currentPosition);
 		//this->playerSprite.setPosition(currentPosition);
 
@@ -114,15 +114,15 @@ void Enemy::updateMovement()
 		this->movingDirection = 0;
 	}
 
-	this->currentVelocityEnemy = rigidBodyEnemy.moveDirectionSpeed(this->currentVelocityEnemy, this->movingDirection);
+	this->currentVelocityEnemy.y = rigidBodyEnemy.moveDirectionSpeed(this->currentVelocityEnemy, this->movingDirection);
 
 
 	sf::Vector2f currentPosition = this->enemyShape.getPosition();
-	currentPosition.x += this->currentVelocityEnemy;
-	if (currentVelocityEnemy > 0)	//maakt het direction onafhankelijk (moet beter later)
-		currentPosition.y += this->currentVelocityEnemy;
+	currentPosition.x += this->currentVelocityEnemy.x;
+	if (currentVelocityEnemy.y > 0)	//maakt het direction onafhankelijk (moet beter later)
+		currentPosition.y += this->currentVelocityEnemy.y;
 	else
-		currentPosition.y -= this->currentVelocityEnemy;
+		currentPosition.y -= this->currentVelocityEnemy.y;
 	this->enemyShape.setPosition(currentPosition);
 	//this->playerSprite.setPosition(currentPosition);
 
@@ -141,23 +141,23 @@ void Enemy::updateWindowBoundsCollision(const sf::RenderTarget* target)
 	{
 		this->wallHit = true;
 		int slipDirection = 0;
-		this->currentVelocityEnemy = rigidBodyEnemy.bounceAgainstWall(this->currentVelocityEnemy, slipDirection);
+		this->currentVelocityEnemy.x = rigidBodyEnemy.bounceAgainstWall(this->currentVelocityEnemy, slipDirection);
 
 		sf::Vector2f currentPosition = this->enemyShape.getPosition();
 		//std::cout << currentPosition.x << std::endl;
-		currentPosition.x += this->currentVelocityEnemy;
-		currentPosition.y += this->currentVelocityEnemy;
+		currentPosition.x += this->currentVelocityEnemy.x;
+		currentPosition.y += this->currentVelocityEnemy.y;
 		//std::cout << currentPosition.x << std::endl;
 	}//Right
 	else if (this->enemyShape.getGlobalBounds().left + this->enemyShape.getGlobalBounds().width >= target->getSize().x)
 	{
 		this->wallHit = true;
 		int slipDirection = 1;
-		this->currentVelocityEnemy = rigidBodyEnemy.bounceAgainstWall(this->currentVelocityEnemy, slipDirection);
+		this->currentVelocityEnemy.x = rigidBodyEnemy.bounceAgainstWall(this->currentVelocityEnemy, slipDirection);
 
 		sf::Vector2f currentPosition = this->enemyShape.getPosition();
-		currentPosition.x += this->currentVelocityEnemy;
-		currentPosition.y += this->currentVelocityEnemy;
+		currentPosition.x += this->currentVelocityEnemy.x;
+		currentPosition.y += this->currentVelocityEnemy.y;
 	}
 	else
 		this->wallHit = false;

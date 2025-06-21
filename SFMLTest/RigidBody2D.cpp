@@ -1,30 +1,31 @@
 #include "RigidBody2D.h"
 
 
-void RigidBody2D::initializeVariables(float mass, float ownForce, float maxVelocity)
+void RigidBody2D::initializeVariables(float mass, Vector2D ownForce, Vector2D maxVelocity)
 {
 	this->mass = mass;
-	this->ownForce = ownForce;
+	this->ownForce.x = ownForce.x;
 
 	//Friction force berekenen; weerstand, en massa acceleratie
 	this->Fw = this->mass * this->gravity;
 	this->FN = -this->Fw;
 	this->fF = this->Mu * this->FN;
 
-	if ((this->ownForce - this->fF) > 0)
+
+	if ((this->ownForce.x - this->fF) > 0)
 	{
-		this->mA = this->ownForce - this->fF;	//massa acceleratie
-		this->acceleration = this->mA / this->mass * 0.0167f;	//framerate = "60", dus "* 0.0167f"
+		this->mA = this->ownForce.x - this->fF;	//massa acceleratie
+		this->acceleration.x = this->mA / this->mass * deltaTime;
 	}
 	else
 	{
 		mA = 0;
-		acceleration = 0;
+		acceleration.x = 0;
 	}
-	this->netForce = this->ownForce - this->fF;
+	this->netForce = this->ownForce.x - this->fF;
 
 	///*TEST acceleration*/ this->acceleration = 1.f;
-	this->maxVelocity = maxVelocity;
+	this->maxVelocity.x = maxVelocity.x;
 	//this->maxVelocity = 
 
 	moveDirectionX = 0;
@@ -32,11 +33,12 @@ void RigidBody2D::initializeVariables(float mass, float ownForce, float maxVeloc
 
 RigidBody2D::RigidBody2D()
 {
-	initializeVariables(1.f, 1.f, 1.f);
+	initializeVariables(1.f, Vector2D(1.f, 1.f), Vector2D(1.f, 1.f));
 }
 
 
-float RigidBody2D::moveDirectionSpeed(float currentVelocity, int direction)		//beweeg met "ownForce" tegen "frictie ownForce"	returned "speed"
+//Only for "X" axis FOR NOW
+float RigidBody2D::moveDirectionSpeed(Vector2D currentVelocity, int direction)		//beweeg met "ownForce" tegen "frictie ownForce"	returned "speed"
 {
 	this->currentVelocity = currentVelocity;		//IN DE MIN ALS JE NAAR LINKS GAAT
 	this->moveDirectionX = direction;
@@ -47,19 +49,19 @@ float RigidBody2D::moveDirectionSpeed(float currentVelocity, int direction)		//b
 
 	if (this->moveDirectionX == 0)
 	{
-		if (this->currentVelocity > -maxVelocity)
-			this->currentVelocity -= acceleration;
+		if (this->currentVelocity.x > -maxVelocity.x)
+			this->currentVelocity.x -= acceleration.x;
 		else
-			this->currentVelocity = -maxVelocity;
+			this->currentVelocity.x = -maxVelocity.x;
 	}
 	else if (this->moveDirectionX == 1)
 	{
-		if (this->currentVelocity < maxVelocity)
+		if (this->currentVelocity.x < maxVelocity.x)
 		{
-			this->currentVelocity += acceleration;
+			this->currentVelocity.x += acceleration.x;
 		}
 		else
-			this->currentVelocity = maxVelocity;
+			this->currentVelocity.x = maxVelocity.x;
 	}
 
 
@@ -74,46 +76,46 @@ float RigidBody2D::moveDirectionSpeed(float currentVelocity, int direction)		//b
 		this->acceleration = 0;
 	}*/															//Later pas nuttig; als er "drag" bij wordt toegevoegt
 
-	return this->currentVelocity;
+	return this->currentVelocity.x;
 }
 
-float RigidBody2D::moveDirectionStopping(float currentVelocity, int movingDirection, int wallHit)		//beweeg met "ownForce" tegen "frictie ownForce"	returned "speed"
+float RigidBody2D::moveDirectionStopping(Vector2D currentVelocity, int movingDirection, int wallHit)		//beweeg met "ownForce" tegen "frictie ownForce"	returned "speed"
 {
 	this->moveDirectionX = movingDirection;
 	this->currentVelocity = currentVelocity;
 
 
-	if (this->moveDirectionX == 0 && this->currentVelocity < 0)
+	if (this->moveDirectionX == 0 && this->currentVelocity.x < 0)
 	{
-		if ((this->currentVelocity + this->acceleration && wallHit == false) < 0.f)		//zorgt ervoor dat acceleratie niet constant heen en weer gaat
-			this->currentVelocity = 0.f;
+		if ((this->currentVelocity.x + this->acceleration.x && wallHit == false) < 0.f)		//zorgt ervoor dat acceleratie niet constant heen en weer gaat
+			this->currentVelocity.x = 0.f;
 		else if (wallHit == false)
-			this->currentVelocity += this->acceleration;
+			this->currentVelocity.x += this->acceleration.x;
 	}
-	else if (this->moveDirectionX == 1 && this->currentVelocity > 0)
+	else if (this->moveDirectionX == 1 && this->currentVelocity.x > 0)
 	{
-		if ((this->currentVelocity + this->acceleration && wallHit == false) < 0.f)	//UNSAFE BOOL IN OPERATION; weet niet hoe ik het kan laten werken als ik het verander
-			this->currentVelocity = 0.f;
+		if ((this->currentVelocity.x + this->acceleration.x && wallHit == false) < 0.f)	//UNSAFE BOOL IN OPERATION; weet niet hoe ik het kan laten werken als ik het verander
+			this->currentVelocity.x = 0.f;
 		else if (wallHit == false)
-			this->currentVelocity -= this->acceleration;
+			this->currentVelocity.x -= this->acceleration.x;
 	}
 	
 
 
-	return this->currentVelocity;
+	return this->currentVelocity.x;
 }
 
 
-float RigidBody2D::bounceAgainstWall(float currentVelocity, int slipDircetion)
+float RigidBody2D::bounceAgainstWall(Vector2D currentVelocity, int slipDircetion)
 {
 	this->moveDirectionX = slipDircetion;
 
-	if (this->currentVelocity < 0 && slipDircetion == 0)
-		this->currentVelocity = -this->currentVelocity * (1.f - 0.15f);		//"0.15f" = force lost bij stuiteren tegen de muur
-	else if (this->currentVelocity > 0 && slipDircetion == 1)
-		this->currentVelocity = -this->currentVelocity * (1.f - 0.15f);		//"0.15f" = force lost bij stuiteren tegen de muur
+	if (this->currentVelocity.x < 0 && slipDircetion == 0)
+		this->currentVelocity.x = -this->currentVelocity.x * (1.f - 0.15f);		//"0.15f" = force lost bij stuiteren tegen de muur
+	else if (this->currentVelocity.x > 0 && slipDircetion == 1)
+		this->currentVelocity.x = -this->currentVelocity.x * (1.f - 0.15f);		//"0.15f" = force lost bij stuiteren tegen de muur
 
 
-	return this->currentVelocity;
+	return this->currentVelocity.x;
 }
 

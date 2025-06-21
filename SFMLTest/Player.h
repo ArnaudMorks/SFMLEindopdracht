@@ -1,6 +1,7 @@
 #pragma once
 
 #include "RigidBody2D.h"
+#include "Body.h"
 
 class Player
 {
@@ -8,10 +9,10 @@ private:
 	int textureRectPlayerPositionXYSize;
 	float spritePlayerXYSize;		//van spritesheet; grootte per plaatje is 16x16
 	float shapePlayerXYSize;		//hitbox. "setScale" en "setSize" zijn floats
-	float forcePlayer;
+	Vector2D forcePlayer;
 	float massPlayer;
-	float currentVelocityPlayer;
-	float maxVelocityPlayer;
+	Vector2D currentVelocityPlayer;
+	Vector2D maxVelocityPlayer;
 
 	bool wallHit;
 
@@ -23,11 +24,14 @@ private:
 	int currentAntiJitterPosition;
 	std::vector<float> antiJitterVectorArray;
 
+	Vector2D startPositionPlayer;
+
 	sf::Texture playerTexture;
 	sf::Sprite playerSprite;
 	sf::RectangleShape playerShape;
 
 	RigidBody2D rigidBodyPlayer;
+	Body bodyPlayer;
 
 	//Private Functions
 	void shapeAndSpritePosition(float x, float y);

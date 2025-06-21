@@ -204,7 +204,7 @@ void Game::updateText()
 void Game::updateTimeToWin()
 {
 	this->timePassed += (1 * 0.0167f);
-	std::cout << this->timePassed << std::endl;
+	//std::cout << this->timePassed << std::endl;
 
 	if (timePassed > timeToWin)
 		win = true;

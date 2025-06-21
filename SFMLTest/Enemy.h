@@ -8,10 +8,10 @@ private:
 	int textureRectEnemyPositionXYSize;
 	float spriteEnemyXYSize;		//van spritesheet; grootte per plaatje is 16x16
 	float shapeEnemyXYSize;		//hitbox. "setScale" en "setSize" zijn floats
-	float forceEnemy;
+	Vector2D forceEnemy;
 	float massEnemy;
-	float currentVelocityEnemy;
-	float maxVelocityEnemy;
+	Vector2D currentVelocityEnemy;
+	Vector2D maxVelocityEnemy;
 
 	int movingDirection;
 

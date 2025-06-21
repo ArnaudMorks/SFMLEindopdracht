@@ -7,6 +7,7 @@
 #include <SFML/Network.hpp>
 #include <sstream>
 #include <ctime>
+#include "Vector2D.h"
 
 
 class RigidBody2D
@@ -17,15 +18,15 @@ private:
 	float mass;
 	float Fw;			//weight ownForce = mass times wieght
 	float FN;			//ownForce Normal
-	float ownForce;		//kant waar je heen wilt (in Newtons)	wordt meegegeven door "Player"
 	//float bounceForce;	//hoeveelheid force die je hebt door tegen de muur te stuiteren
 	float mA;			//massa acceleratie
-	float acceleration;			//acceleratie
 	float fF;			//frictie ownForce		mb illegale namen
 	float netForce;
 
-	float currentVelocity;
-	float maxVelocity;
+	Vector2D ownForce;		//kant waar je heen wilt (in Newtons)	wordt meegegeven door "Player"
+	Vector2D acceleration;			//acceleratie
+	Vector2D currentVelocity;
+	Vector2D maxVelocity;
 
 	int moveDirectionX;
 
@@ -33,12 +34,14 @@ private:
 public:
 	RigidBody2D();		//parameters zijn om positie mee te geven, values om default position mee te geven
 
+	float const deltaTime = 0.0167f; //framerate = "60", dus "* 0.0167f"
+
 	//"initialzeVariable" wordt 2 keer gedaan; vanuit "constructor" en vanuit "Player.cpp", MOET BETER ALS ER TIJD VOOR IS
 	//dit wegens "Warning C26495"
-	void initializeVariables(float mass, float ownForce, float maxVelocity);		//defaults	sommige variables komen vanuit "Player"
-	float moveDirectionSpeed(float currentVelocity = 0.f, int direction = 2);		//default "2"; "2" = niet bewegen
-	float moveDirectionStopping(float currentVelocity = 0.f, int movingDirection = 0, int wallHit = 0);		//default "2"; "2" = niet bewegen
-	float bounceAgainstWall(float currentVelocity, int slipDircetion);
+	void initializeVariables(float mass, Vector2D ownForce, Vector2D maxVelocity);		//defaults	sommige variables komen vanuit "Player"
+	float moveDirectionSpeed(Vector2D currentVelocity = Vector2D(0.f, 0.f), int direction = 2);		//default "2"; "2" = niet bewegen
+	float moveDirectionStopping(Vector2D currentVelocity = Vector2D(0.f, 0.f), int movingDirection = 0, int wallHit = 0);		//default "2"; "2" = niet bewegen
+	float bounceAgainstWall(Vector2D currentVelocity, int slipDircetion);
 
 };
 
