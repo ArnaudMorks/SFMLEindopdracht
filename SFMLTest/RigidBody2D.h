@@ -41,7 +41,8 @@ public:
 	//"initialzeVariable" wordt 2 keer gedaan; vanuit "constructor" en vanuit "Player.cpp", MOET BETER ALS ER TIJD VOOR IS
 	//dit wegens "Warning C26495"
 	void initializeVariables(float mass, Vector2D ownForce, Vector2D maxVelocity);		//defaults	sommige variables komen vanuit "Player"
-	float moveDirectionSpeed(Vector2D currentVelocity = Vector2D(0.f, 0.f), int direction = 2);		//default "2"; "2" = niet bewegen
+	Vector2D moveDirectionSpeed(Vector2D currentVelocity, int direction = 2);		//default "2"; "2" = niet bewegen
+	float enemyMoveDownSpeed(float currentVelocityY);
 	float moveDirectionStopping(Vector2D currentVelocity = Vector2D(0.f, 0.f), int movingDirection = 0, int wallHit = 0);		//default "2"; "2" = niet bewegen
 	float bounceAgainstWall(Vector2D currentVelocity, int slipDircetion);
 

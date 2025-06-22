@@ -9,10 +9,10 @@ private:
 	int textureRectPlayerPositionXYSize;
 	float spritePlayerXYSize;		//van spritesheet; grootte per plaatje is 16x16
 	float shapePlayerXYSize;		//hitbox. "setScale" en "setSize" zijn floats
-	const Vector2D forcePlayer = Vector2D(140.f, 0.f);
 	float massPlayer;
+	const Vector2D forcePlayer = Vector2D(140.f, 0.f);
 	Vector2D currentVelocityPlayer;
-	Vector2D maxVelocityPlayer;
+	const Vector2D maxVelocityPlayer = Vector2D(30.f, 0.f);
 
 	bool wallHit;
 
@@ -31,7 +31,6 @@ private:
 	sf::RectangleShape playerShape;
 
 	RigidBody2D rigidBodyPlayer;
-	Body bodyPlayer;
 
 	//Private Functions
 	void shapeAndSpritePosition(float x, float y);
@@ -45,6 +44,8 @@ public:
 	Player(float x = 0.f, float y = 0.f);		//parameters zijn om positie mee te geven, values om default position mee te geven
 	virtual ~Player();
 
+	const Vector2D collisionSizePlayer = Vector2D(64, 80);
+	Body bodyPlayer;
 	const sf::RectangleShape& getPlayerShape() const;
 
 	//Public Functions

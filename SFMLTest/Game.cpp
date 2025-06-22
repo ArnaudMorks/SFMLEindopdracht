@@ -14,12 +14,14 @@ void Game::initializeVariables()
 	this-> spawnRateUpAmount = 0.8f;
 
 	this->maxEnemies = 30;
-	this->hittable = true;
+	//this->hittable = true;
 	//this->mouseHeld = false;
 	this->timeToWin = 80.f;	//tijd in seconden
 	this->timePassed = 0.f;
 	this->win = false;
 	this->lost = false;
+
+
 
 
 	for (int i = 0; i < maxEnemies; i++)
@@ -142,8 +144,8 @@ void Game::enemySpawnerUpdate()
 			i++;
 		}
 		if (i < maxEnemies - 1)
-			this->enemies[i].enemySpawn(
-				static_cast<float>(rand() % static_cast<int>(this->windowPointer->getSize().x - 1.f)));	//random "X" positie
+			this->enemies[i].enemySpawn(static_cast<float>(rand()
+				% static_cast<int>(this->windowPointer->getSize().x - 1.f)));	//random "X" positie CHANGE
 
 		this->enemySpawnTimer = 0.f;
 	}
@@ -168,17 +170,58 @@ void Game::updateCollision()
 	//Check the collision
 	for (int i = 0; i < maxEnemies - 1; i++)
 	{
-		/*if (this->player.getPlayerShape().getGlobalBounds()			ORIGINAL COLLISION
+		/*if (this->player.getPlayerShape().getGlobalBounds()			//ORIGINAL COLLISION
 			.intersects(this->enemies[i].getEnemyShape().getGlobalBounds()))
 		{
 			this->enemies[i].enemyDespawn();	//nu doet dit niks; voor als er later "lives" worden toegevoegt
 			lost = true;
+		}
+		std::cout << this->player.getPlayerShape().getGlobalBounds().top << std::endl;
+		std::cout << this->player.getPlayerShape().getGlobalBounds().height << std::endl;*/
+
+		/*if ((this->player.bodyPlayer.currentPosition.x - sizePlayer.x * 0.5f
+			- this->enemies[i].enemyBody.currentPosition.x < 10)
+			&& (this->player.bodyPlayer.currentPosition.x + sizePlayer.x * 0.5f
+				- this->enemies[i].enemyBody.currentPosition.x > -10)
+			&& (this->player.bodyPlayer.currentPosition.y - sizePlayer.y * 0.5f
+				- this->enemies[i].enemyBody.currentPosition.y < 10)
+			&& (this->player.bodyPlayer.currentPosition.y + sizePlayer.y * 0.5f
+				- this->enemies[i].enemyBody.currentPosition.y > -10))*/
+
+		Vector2D sizePlayer = this->player.collisionSizePlayer;
+		Vector2D sizeEnemy = this->enemies[i].collisionSizeEnemy;
+
+		/*Player origins: X = Center, Y = top*/
+		/*Enemy origins: X = Center, Y = top*/
+
+		//std::cout << this->player.bodyPlayer.currentPosition.y + sizePlayer.y * 0.5f << std::endl;
+		//std::cout << this->player.bodyPlayer.currentPosition.y - sizePlayer.y << std::endl;
+
+		if ((this->player.bodyPlayer.currentPosition.x - sizePlayer.x * 0.5f
+			< this->enemies[i].bodyEnemy.currentPosition.x + sizeEnemy.x * 0.5f)
+			&& (this->player.bodyPlayer.currentPosition.x + sizePlayer.x * 0.5f
+				> this->enemies[i].bodyEnemy.currentPosition.x - sizeEnemy.x * 0.5f)
+			&& (this->player.bodyPlayer.currentPosition.y
+				< this->enemies[i].bodyEnemy.currentPosition.y + sizeEnemy.y)
+			&& (this->player.bodyPlayer.currentPosition.y + sizePlayer.y
+				> this->enemies[i].bodyEnemy.currentPosition.y - sizeEnemy.y))
+		{
+			this->enemies[i].enemyDespawn();	//nu doet dit niks; voor als er later "lives" worden toegevoegt
+			lost = true;
+		}
+
+
+		/*if (this->enemies[i].getEnemyShape().getPosition().y > this->windowPointer->getSize().y)	//CHANGE!!!
+		{
+			if (enemies[i].hasEnemySpawnedCheck() == true)
+			{
+				this->enemies[i].enemyDespawn();
+				this->points++;
+				//std::cout << points << " " << this->enemies[i].getEnemyShape().getPosition().y << "Enemy Despawned" << std::endl;
+			}
 		}*/
 
-
-
-
-		if (this->enemies[i].getEnemyShape().getPosition().y > this->windowPointer->getSize().y)
+		if (this->enemies[i].bodyEnemy.currentPosition.y > 1080)
 		{
 			if (enemies[i].hasEnemySpawnedCheck() == true)
 			{

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "RigidBody2D.h"
+#include "Body.h"
 
 class Enemy
 {
@@ -8,10 +9,12 @@ private:
 	int textureRectEnemyPositionXYSize;
 	float spriteEnemyXYSize;		//van spritesheet; grootte per plaatje is 16x16
 	float shapeEnemyXYSize;		//hitbox. "setScale" en "setSize" zijn floats
-	Vector2D forceEnemy;
 	float massEnemy;
+	const float yPositionSpawn = -100.f;
+
+	const Vector2D forceEnemy = Vector2D(40.f, 4.f);
 	Vector2D currentVelocityEnemy;
-	Vector2D maxVelocityEnemy;
+	const Vector2D maxVelocityEnemy = Vector2D(50.f, 9.f);
 
 	int movingDirection;
 
@@ -33,7 +36,9 @@ public:
 	Enemy();
 	virtual ~Enemy();
 
-	const sf::RectangleShape getEnemyShape() const;		//"const" want wordt nooit verandert
+	const Vector2D collisionSizeEnemy = Vector2D(0.5f, 0.5f);
+	Body bodyEnemy;
+	//const sf::RectangleShape getEnemyShape() const;		//"const" want wordt nooit verandert
 
 	//Public Functions
 	void enemyDespawn();

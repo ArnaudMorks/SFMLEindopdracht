@@ -25,7 +25,7 @@ void RigidBody2D::initializeVariables(float mass, Vector2D ownForce, Vector2D ma
 	//this->netForce = this->ownForce.x - this->fF;
 
 	///*TEST acceleration*/ this->acceleration = 1.f;
-	this->maxVelocity.x = maxVelocity.x;
+	this->maxVelocity = maxVelocity;
 	//this->maxVelocity = 
 
 	this->moveDirectionX = 0;
@@ -38,9 +38,9 @@ RigidBody2D::RigidBody2D()
 
 
 //Only for "X" axis FOR NOW
-float RigidBody2D::moveDirectionSpeed(Vector2D currentVelocity, int direction)		//beweeg met "ownForce" tegen "frictie ownForce"	returned "speed"
+Vector2D RigidBody2D::moveDirectionSpeed(Vector2D currentVelocity, int direction)		//beweeg met "ownForce" tegen "frictie ownForce"	returned "speed"
 {
-	this->currentVelocity = currentVelocity;		//IN DE MIN ALS JE NAAR LINKS GAAT
+	this->currentVelocity.x = currentVelocity.x;		//IN DE MIN ALS JE NAAR LINKS GAAT
 	this->moveDirectionX = direction;
 
 	/*std::cout << this->mass << std::endl;
@@ -64,6 +64,11 @@ float RigidBody2D::moveDirectionSpeed(Vector2D currentVelocity, int direction)		
 			this->currentVelocity.x = maxVelocity.x;
 	}
 
+	if (this->maxVelocity.y != 0)		// "0" = "maxVelocity.y" for the player
+		if (this->currentVelocity.y < maxVelocity.y)
+			this->currentVelocity.y += acceleration.y;
+		else
+			this->currentVelocity.y = maxVelocity.y;
 
 	/*if (this->ownForce > this->fF)
 	{
@@ -76,7 +81,17 @@ float RigidBody2D::moveDirectionSpeed(Vector2D currentVelocity, int direction)		
 		this->acceleration = 0;
 	}*/															//Later pas nuttig; als er "drag" bij wordt toegevoegt
 
-	return this->currentVelocity.x;
+	return this->currentVelocity;
+}
+
+float RigidBody2D::enemyMoveDownSpeed(float currentVelocity)
+{
+	if (this->currentVelocity.y > -maxVelocity.x)
+		this->currentVelocity.y -= acceleration.y;
+	else
+		this->currentVelocity.y = -maxVelocity.y;
+
+	return this->currentVelocity.y;
 }
 
 float RigidBody2D::moveDirectionStopping(Vector2D currentVelocity, int movingDirection, int wallHit)		//beweeg met "ownForce" tegen "frictie ownForce"	returned "speed"

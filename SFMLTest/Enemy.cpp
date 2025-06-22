@@ -4,13 +4,13 @@ void Enemy::initializeVariables()
 {
 	//this->textureRectEnemyPositionXYSize = 16;
 	//this->spriteEnemyXYSize = 4.f;		//"spritePlayerXYSize" bepaalt "shapePlayerXYSize" omdat "spritePlayerXYSize" altijd groter moet zijn
-	this->shapeEnemyXYSize = 0.5f;	//"float * int" converts "int" to float
+	//this->shapeEnemyXYSize = 0.5f;	//"float * int" converts "int" to float
 
 	//PlayerRigidBodyVariables
-	this->forceEnemy.x = 20.f;
+	//this->forceEnemy = Vector2D(20.f, 1.f);
 	this->massEnemy = 2.f;
 	this->currentVelocityEnemy.x = 0.f;
-	this->maxVelocityEnemy.x = 30.f;
+	//this->maxVelocityEnemy.x = 30.f;
 
 	this->movingDirection = 3;		//"0" = links, "1" = rechts, "2" is stoppen, "3" is NIET veranderen van huidige richting (basis)
 
@@ -20,6 +20,7 @@ void Enemy::initializeVariables()
 
 	this->enemySpawned = false;
 
+	bodyEnemy.currentPosition = Vector2D(0,0);
 	rigidBodyEnemy.initializeVariables(massEnemy, forceEnemy, maxVelocityEnemy);
 
 }
@@ -28,8 +29,10 @@ void Enemy::initializeShape()
 {
 	this->enemyShape.setPosition(10.f, 10.f);
 	this->enemyShape.setSize(sf::Vector2f(100.f, 100.f));
-	this->enemyShape.setScale(sf::Vector2f(shapeEnemyXYSize, shapeEnemyXYSize));
+	this->enemyShape.setScale(sf::Vector2f(collisionSizeEnemy.x, collisionSizeEnemy.y));
 	this->enemyShape.setFillColor(sf::Color(0, 255, 255));
+	this->enemyShape.setOrigin(sf::Vector2f(100.f * 0.5f, 0.f));	//positie in het midden (voor "mirror" in animatie)
+
 }
 
 bool Enemy::hasEnemySpawnedCheck()
@@ -42,8 +45,9 @@ void Enemy::enemySpawn(float randomXPosition)
 	this->enemySpawned = true;
 	//std::cout << enemySpawned << std::endl;
 	this->currentVelocityEnemy = Vector2D(0.f, 0.f);
+	bodyEnemy.currentPosition = Vector2D(randomXPosition, this->yPositionSpawn);
 	//"rand" pakt alleen een "int", "static_cast" maakt op het laatst weer een "float"
-	this->enemyShape.setPosition(randomXPosition, -100.f);
+	this->enemyShape.setPosition(randomXPosition, this->yPositionSpawn);
 	this->movingDirection = rand() % 2;		//random kant
 	//std::cout << movingDirection << std::endl;
 
@@ -78,27 +82,27 @@ Enemy::~Enemy()
 }
 
 void Enemy::updateMovement()
-{	
+{
 	if (this->movingDirection == 0)	//Left
 	{
-	//visualMoveDirection = movingDirection;
+		//visualMoveDirection = movingDirection;
 
-		//if (sf::Keyboard::isKeyPressed(sf::Keyboard::L))	MANUAL WALL COLLISION TEST
+			//if (sf::Keyboard::isKeyPressed(sf::Keyboard::L))	MANUAL WALL COLLISION TEST
 		if (this->wallHit == true)
 		{
 			this->movingDirection = 1;
 		}
 
-		this->currentVelocityEnemy.x = rigidBodyEnemy.moveDirectionSpeed(this->currentVelocityEnemy, this->movingDirection);
+		this->currentVelocityEnemy = rigidBodyEnemy.moveDirectionSpeed(this->currentVelocityEnemy, this->movingDirection);
+		//this->currentVelocityEnemy.y = rigidBodyEnemy.enemyMoveDownSpeed(this->currentVelocityEnemy.y);
 
-
-		sf::Vector2f currentPosition = this->enemyShape.getPosition();
-		currentPosition.x += this->currentVelocityEnemy.x;
-		if (currentVelocityEnemy.y > 0)	//maakt het direction onafhankelijk (moet beter later)
-			currentPosition.y += this->currentVelocityEnemy.y;
+		//sf::Vector2f currentPosition = this->enemyShape.getPosition();
+		bodyEnemy.currentPosition += this->currentVelocityEnemy;
+		/*if (currentVelocityEnemy.y > 0)	//maakt het direction onafhankelijk (moet beter later)
+			bodyEnemy.currentPosition.y += this->currentVelocityEnemy.y;
 		else
-			currentPosition.y -= this->currentVelocityEnemy.y;
-		this->enemyShape.setPosition(currentPosition);
+			bodyEnemy.currentPosition.y -= this->currentVelocityEnemy.y;*/
+		this->enemyShape.setPosition(bodyEnemy.currentPosition.x, bodyEnemy.currentPosition.y);
 		//this->playerSprite.setPosition(currentPosition);
 
 
@@ -107,57 +111,61 @@ void Enemy::updateMovement()
 	}
 	else if (this->movingDirection == 1)	//Right
 	{
-	//visualMoveDirection = movingDirection;
+		//visualMoveDirection = movingDirection;
 
-	if (this->wallHit == true)
-	{
-		this->movingDirection = 0;
+		if (this->wallHit == true)
+		{
+			this->movingDirection = 0;
+		}
+
+		this->currentVelocityEnemy = rigidBodyEnemy.moveDirectionSpeed(this->currentVelocityEnemy, this->movingDirection);
+		//this->currentVelocityEnemy.y = rigidBodyEnemy.enemyMoveDownSpeed(this->currentVelocityEnemy.y);
+
+		//sf::Vector2f currentPosition = this->enemyShape.getPosition();
+		bodyEnemy.currentPosition += this->currentVelocityEnemy;
+		/*if (currentVelocityEnemy.y > 0)	//maakt het direction onafhankelijk (moet beter later)
+			bodyEnemy.currentPosition.y += this->currentVelocityEnemy.y;
+		else
+			bodyEnemy.currentPosition.y -= this->currentVelocityEnemy.y;*/
+		this->enemyShape.setPosition(bodyEnemy.currentPosition.x, bodyEnemy.currentPosition.y);
+		//this->playerSprite.setPosition(currentPosition);
+
+
+		if (this->wallHit == true)
+			this->wallHit = false;
 	}
 
-	this->currentVelocityEnemy.y = rigidBodyEnemy.moveDirectionSpeed(this->currentVelocityEnemy, this->movingDirection);
+	//bodyEnemy.currentPosition.y += 1.f;
 
-
-	sf::Vector2f currentPosition = this->enemyShape.getPosition();
-	currentPosition.x += this->currentVelocityEnemy.x;
-	if (currentVelocityEnemy.y > 0)	//maakt het direction onafhankelijk (moet beter later)
-		currentPosition.y += this->currentVelocityEnemy.y;
-	else
-		currentPosition.y -= this->currentVelocityEnemy.y;
-	this->enemyShape.setPosition(currentPosition);
-	//this->playerSprite.setPosition(currentPosition);
-
-
-	if (this->wallHit == true)
-		this->wallHit = false;
-	}
+	//std::cout << bodyEnemy.currentPosition.x << std::endl;
 }
 
 
 void Enemy::updateWindowBoundsCollision(const sf::RenderTarget* target)
 {
 	//Left
-	sf::Vector2f playerPosition = this->enemyShape.getPosition();	//eigen vector2 maken
-	if (this->enemyShape.getGlobalBounds().left <= 0.f)
+	//sf::Vector2f playerPosition = this->enemyShape.getPosition();	//eigen vector2 maken
+	if (bodyEnemy.currentPosition.x <= 0.f)
 	{
 		this->wallHit = true;
 		int slipDirection = 0;
 		this->currentVelocityEnemy.x = rigidBodyEnemy.bounceAgainstWall(this->currentVelocityEnemy, slipDirection);
 
-		sf::Vector2f currentPosition = this->enemyShape.getPosition();
+		//sf::Vector2f currentPosition = this->enemyShape.getPosition();
 		//std::cout << currentPosition.x << std::endl;
-		currentPosition.x += this->currentVelocityEnemy.x;
-		currentPosition.y += this->currentVelocityEnemy.y;
+		bodyEnemy.currentPosition.x += this->currentVelocityEnemy.x;
+		bodyEnemy.currentPosition.y += this->currentVelocityEnemy.y;
 		//std::cout << currentPosition.x << std::endl;
 	}//Right
-	else if (this->enemyShape.getGlobalBounds().left + this->enemyShape.getGlobalBounds().width >= target->getSize().x)
+	else if (bodyEnemy.currentPosition.x + collisionSizeEnemy.x > 1920.f)	// + SIZE LATER
 	{
 		this->wallHit = true;
 		int slipDirection = 1;
 		this->currentVelocityEnemy.x = rigidBodyEnemy.bounceAgainstWall(this->currentVelocityEnemy, slipDirection);
 
-		sf::Vector2f currentPosition = this->enemyShape.getPosition();
-		currentPosition.x += this->currentVelocityEnemy.x;
-		currentPosition.y += this->currentVelocityEnemy.y;
+		//sf::Vector2f currentPosition = this->enemyShape.getPosition();
+		bodyEnemy.currentPosition.x += this->currentVelocityEnemy.x;
+		bodyEnemy.currentPosition.y += this->currentVelocityEnemy.y;
 	}
 	else
 		this->wallHit = false;

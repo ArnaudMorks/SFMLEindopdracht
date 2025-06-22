@@ -13,7 +13,7 @@ void Player::initializeVariables()
 	bodyPlayer.forceObject = this->forcePlayer;
 	this->massPlayer = 5.f;
 	this->currentVelocityPlayer.x = 0.f;
-	this->maxVelocityPlayer.x = 30.f;
+	//this->maxVelocityPlayer.x = 30.f;
 
 	this->wallHit = false;
 
@@ -32,6 +32,7 @@ void Player::initializeVariables()
 	}
 
 	startPositionPlayer = Vector2D(800, 900);
+	//startPositionPlayer = Vector2D(800, 0);
 
 	bodyPlayer.currentPosition = startPositionPlayer;
 	rigidBodyPlayer.initializeVariables(massPlayer, bodyPlayer.forceObject, maxVelocityPlayer);
@@ -147,7 +148,7 @@ void Player::updateInput()
 			movingDirection = 1;
 		}
 
-		this->currentVelocityPlayer.x = rigidBodyPlayer.moveDirectionSpeed(this->currentVelocityPlayer, movingDirection);
+		this->currentVelocityPlayer = rigidBodyPlayer.moveDirectionSpeed(this->currentVelocityPlayer, movingDirection);
 
 
 		//sf::Vector2f currentPosition = this->playerShape.getPosition();//LATER EIGEN VECTOR2D VAN MAKEN!!!
@@ -171,7 +172,7 @@ void Player::updateInput()
 			movingDirection = 0;
 		}
 
-		this->currentVelocityPlayer.x = rigidBodyPlayer.moveDirectionSpeed(this->currentVelocityPlayer, movingDirection);
+		this->currentVelocityPlayer = rigidBodyPlayer.moveDirectionSpeed(this->currentVelocityPlayer, movingDirection);
 
 		//sf::Vector2f currentPosition = this->playerShape.getPosition();//LATER EIGEN VECTOR2D VAN MAKEN!!!
 
@@ -259,7 +260,7 @@ void Player::updateWindowBoundsCollision()
 {
 	//Left
 	//sf::Vector2f playerPosition = this->playerShape.getPosition();	//eigen vector2 maken
-	if (bodyPlayer.currentPosition.x <= 0.f)
+	if (bodyPlayer.currentPosition.x - collisionSizePlayer.x * 0.5f <= 0.f)
 	{
 		this->wallHit = true;
 		int slipDirection = 0;
@@ -271,7 +272,7 @@ void Player::updateWindowBoundsCollision()
 		bodyPlayer.currentPosition.x += this->currentVelocityPlayer.x;
 
 	}//Right
-	else if (bodyPlayer.currentPosition.x >= 1900)
+	else if (bodyPlayer.currentPosition.x + collisionSizePlayer.x * 0.5f >= 1920)
 	{
 		this->wallHit = true;
 		int slipDirection = 1;
@@ -293,7 +294,7 @@ void Player::update()
 
 	this->updateInput();
 
-	std::cout << this->bodyPlayer.currentPosition.x << std::endl;
+	//std::cout << this->bodyPlayer.currentPosition.x << std::endl;
 }
 
 void Player::render(sf::RenderTarget* target)

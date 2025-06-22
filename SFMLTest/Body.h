@@ -15,5 +15,7 @@ public:
 	Vector2D forceObject;			//gets set by a "const" in "Player" and "Enemy"
 	Vector2D currentVelocityObject;
 
+	RigidBody2D rigidBody;
+
 };
 
