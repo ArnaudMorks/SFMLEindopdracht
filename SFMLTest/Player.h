@@ -28,7 +28,6 @@ private:
 
 	sf::Texture playerTexture;
 	sf::Sprite playerSprite;
-	//sf::RectangleShape playerShape;
 
 	RigidBody2D rigidBodyPlayer;
 
@@ -41,7 +40,7 @@ private:
 	void updateSprite(bool moving = false);		//zit in "updateInput" om de animatie te bepalen
 
 public:
-	Player(float x = 0.f, float y = 0.f);		//parameters zijn om positie mee te geven, values om default position mee te geven
+	Player(float x = 0.f, float y = 0.f);	//parameters zijn om positie mee te geven, values om default position mee te geven
 	virtual ~Player();
 
 	const Vector2D collisionSizePlayer = Vector2D(64, 80);
@@ -53,6 +52,5 @@ public:
 	void updateWindowBoundsCollision();
 	void update();
 	void render(sf::RenderTarget* target);
-	//void renderPlayer();
 };
 

@@ -1,13 +1,7 @@
 #pragma once
 
-//#include <vector>
 #include "Player.h"
 #include "Enemy.h"
-
-/*
-	Class that acts as the game engine.
-	Wrapper class ??
-*/
 
 
 class Game
@@ -19,9 +13,6 @@ private:
 	sf::VideoMode videoMode;
 	sf::Event myEvent;
 
-	//Mouse positions
-	//sf::Vector2i mousePositionWindow;	//integer vector2 array
-	//sf::Vector2f mousePositionView;		//float vector2 array
 
 	//Recources
 	sf::Font font;
@@ -48,20 +39,11 @@ private:
 	const Vector2D screenSize = Vector2D(1920, 1080);
 
 	int maxEnemies;
-	//bool hittable;			//WERKT NOG NIET
-	//bool mouseHeld;
-	//float timeToWin;
-	//float timePassed;
+
 	bool win;
 	bool lost;
 
-	//Game objects
-	//std::vector<sf::RectangleShape> enemies;	//enemy vector array
-	//sf::RectangleShape enemy;
-
 	std::vector<Enemy> enemies;		//Vector Array van Enemy class
-	//Enemy enemyObject;
-	//Player* playerObject;
 
 	Player player;
 
@@ -82,19 +64,12 @@ public:
 	const bool running() const;
 
 	//Functions
-	//void spawnEnemy();
-
 	void pollEvents();
-	//void updateMousePositions();
 	void enemySpawnerUpdate();
 	void updateCollision();
-	//void updateEnemies();
 	void updateText();
-	//void updateTimeToWin();
 	void update();
 
-	//void renderEnemies();
-	//void renderPlayer();
 	void renderText(sf::RenderTarget& renderTarget);
 	void render();
 };

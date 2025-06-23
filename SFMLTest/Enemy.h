@@ -6,9 +6,6 @@
 class Enemy
 {
 private:
-	//int textureRectEnemyPositionXYSize;
-	//float spriteEnemyXYSize;		//van spritesheet; grootte per plaatje is 16x16
-	//float shapeEnemyXYSize;		//hitbox. "setScale" en "setSize" zijn floats
 	const float visualXYSizePlayer = 100.f;
 	const float massEnemy = 2.f;
 	const float yPositionSpawn = -100.f;
@@ -41,7 +38,6 @@ public:
 
 	const Vector2D collisionSizeEnemy = Vector2D(0.5f, 0.5f);
 	Body bodyEnemy;
-	//const sf::RectangleShape getEnemyShape() const;		//"const" want wordt nooit verandert
 
 	//Public Functions
 	void enemyDespawn();

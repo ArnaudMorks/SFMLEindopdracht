@@ -7,16 +7,13 @@ void Game::initializeVariables()
 
 	//Game logic
 	this->points = 0;
-	this->enemyMaxSpawnTimer = 200.f;		//delta time maybe later
+	this->enemyMaxSpawnTimer = 200.f;		//time per frame, get's decreased later to spawn enemies faster
 	this->enemySpawnTimer = this->enemyMaxSpawnTimer;
 	this-> timerSpeedUpInterval = 8.f;
 	this-> timerSpeedupTimer;
 
 	this->maxEnemies = 30;
-	//this->hittable = true;
-	//this->mouseHeld = false;
-	//this->timeToWin = 80.f;	//tijd in seconden
-	//this->timePassed = 0.f;
+
 	this->win = false;
 	this->lost = false;
 
@@ -47,7 +44,6 @@ void Game::initializeSprite()
 	this->loseScreenTexture.loadFromFile("images/LoseScreen.png");
 
 	this->endScreenSprite.setTexture(this->loseScreenTexture);
-	//this->endScreenSprite.setTextureRect(sf::IntRect(0, 0, 1920, 1080));
 	this->endScreenSprite.setScale(1, 1);
 }
 
@@ -65,17 +61,6 @@ void Game::initializeTexts()
 }
 
 
-/*void Game::initializeEnemies()
-{
-	this->enemy.setPosition(10.f, 10.f);
-	this->enemy.setSize(sf::Vector2f(100.f, 100.f));
-	this->enemy.setScale(sf::Vector2f(0.5f, 0.5f));
-	this->enemy.setSize(sf::Vector2f(100.f, 100.f));
-	this->enemy.setFillColor(sf::Color(0, 255, 255));
-	//this->enemy.setOutlineColor(sf::Color(255, 0, 0));
-	//this->enemy.setOutlineThickness(1.f);		//outline beweegt raar mee
-}*/
-
 //Constructors / Destructors
 Game::Game()
 {
@@ -84,16 +69,12 @@ Game::Game()
 	this->initializeSprite();
 	this->initializeFonts();
 	this->initializeTexts();
-	//this->initializeEnemies();
 }
 
 Game::~Game()
 {
 	delete this->windowPointer;
 	this->windowPointer = nullptr;		//niet per sé nodig, maar is good practice
-
-	/*delete this->playerObject;
-	this->playerObject = nullptr;*/
 }
 
 //Accessors
@@ -123,19 +104,8 @@ void Game::pollEvents()
 			break;
 		}
 	}
+
 }
-
-
-//void Game::updateMousePositions()
-//{
-	/*
-		Update the mouse positions
-			- Mouse position relative to window (Vector2i)
-	*/
-
-	//this->mousePositionWindow = sf::Mouse::getPosition(*this->windowPointer);	//moet pointer dereferencen om zichzelf een waarde te geven
-	//this->mousePositionView = this->windowPointer->mapPixelToCoords(this->mousePositionWindow);
-//}
 
 void Game::enemySpawnerUpdate()
 {
@@ -174,33 +144,12 @@ void Game::updateCollision()
 	//Check collision between enemies and player
 	for (int i = 0; i < maxEnemies - 1; i++)
 	{
-		/*if (this->player.getPlayerShape().getGlobalBounds()			//ORIGINAL COLLISION
-			.intersects(this->enemies[i].getEnemyShape().getGlobalBounds()))
-		{
-			this->enemies[i].enemyDespawn();	//nu doet dit niks; voor als er later "lives" worden toegevoegt
-			lost = true;
-		}
-		std::cout << this->player.getPlayerShape().getGlobalBounds().top << std::endl;
-		std::cout << this->player.getPlayerShape().getGlobalBounds().height << std::endl;*/
-
-		/*if ((this->player.bodyPlayer.currentPosition.x - sizePlayer.x * 0.5f
-			- this->enemies[i].enemyBody.currentPosition.x < 10)
-			&& (this->player.bodyPlayer.currentPosition.x + sizePlayer.x * 0.5f
-				- this->enemies[i].enemyBody.currentPosition.x > -10)
-			&& (this->player.bodyPlayer.currentPosition.y - sizePlayer.y * 0.5f
-				- this->enemies[i].enemyBody.currentPosition.y < 10)
-			&& (this->player.bodyPlayer.currentPosition.y + sizePlayer.y * 0.5f
-				- this->enemies[i].enemyBody.currentPosition.y > -10))*/
-
 		//Keeps checking; maybe in a later version these values will change during playtime
 		Vector2D sizePlayer = this->player.collisionSizePlayer;
 		Vector2D sizeEnemy = this->enemies[i].collisionSizeEnemy;
 
 		/*Player origins: X = Center, Y = top*/
 		/*Enemy origins: X = Center, Y = top*/
-
-		//std::cout << this->player.bodyPlayer.currentPosition.y + sizePlayer.y * 0.5f << std::endl;
-		//std::cout << this->player.bodyPlayer.currentPosition.y - sizePlayer.y << std::endl;
 
 		if ((this->player.bodyPlayer.currentPosition.x - sizePlayer.x * 0.5f
 			< this->enemies[i].bodyEnemy.currentPosition.x + sizeEnemy.x * 0.5f)
@@ -211,20 +160,10 @@ void Game::updateCollision()
 			&& (this->player.bodyPlayer.currentPosition.y + sizePlayer.y
 				> this->enemies[i].bodyEnemy.currentPosition.y - sizeEnemy.y))
 		{
-			this->enemies[i].enemyDespawn();	//nu doet dit niks; voor als er later "lives" worden toegevoegt
+			this->enemies[i].enemyDespawn();	//not usefull right now; it will be later if lives get added
 			lost = true;
 		}
 
-
-		/*if (this->enemies[i].getEnemyShape().getPosition().y > this->windowPointer->getSize().y)	//CHANGE!!!
-		{
-			if (enemies[i].hasEnemySpawnedCheck() == true)
-			{
-				this->enemies[i].enemyDespawn();
-				this->points++;
-				//std::cout << points << " " << this->enemies[i].getEnemyShape().getPosition().y << "Enemy Despawned" << std::endl;
-			}
-		}*/
 
 		if (this->enemies[i].bodyEnemy.currentPosition.y > screenSize.y)
 		{
@@ -232,7 +171,6 @@ void Game::updateCollision()
 			{
 				this->enemies[i].enemyDespawn();
 				this->points++;
-				//std::cout << points << " " << this->enemies[i].getEnemyShape().getPosition().y << "Enemy Despawned" << std::endl;
 			}
 		}
 	}
@@ -255,16 +193,6 @@ void Game::updateText()
 		win = true;
 }
 
-
-/*void Game::updateTimeToWin()
-{
-	this->timePassed += (1 * 0.0167f);
-	//std::cout << this->timePassed << std::endl;
-
-	if (timePassed > timeToWin)
-		win = true;
-}*/
-
 void Game::update()
 {
 	this->pollEvents();
@@ -273,14 +201,9 @@ void Game::update()
 	if (lost || win)
 		return;
 
-	//this->updateTimeToWin();
-
 	this->updateText();
 
-	//this->updateMousePositions();
-
 	this->enemySpawnerUpdate();
-	//this->updateEnemies();
 
 	for (int i = 0; i < maxEnemies - 1; i++)
 	{
@@ -290,22 +213,9 @@ void Game::update()
 		}
 	}
 
-	this->player.update();	//paramater is een pointer
+	this->player.update();
 	this->updateCollision();
 }
-
-/*void Game::renderEnemies()
-{
-	for (auto& enemyMove : this->enemies)		//"auto&" is snellere for loop methode
-	{
-		this->windowPointer->draw(enemyMove);
-	}
-}*/
-
-/*void Game::renderPlayer()
-{
-	this->windowPointer->draw(playerObject->playerSprite);
-}*/
 
 void Game::renderText(sf::RenderTarget& renderTarget)
 {
@@ -321,6 +231,9 @@ void Game::render()
 
 		Renders the game objects.
 	*/
+	if (windowPointer == NULL)
+		return;
+
 	if (win)
 	{
 		//SHOW WIN SCREEN
@@ -341,9 +254,6 @@ void Game::render()
 	}
 
 	this->windowPointer->clear(sf::Color(0, 19, 127, 255));
-
-	//Draw game objects
-	//this->renderEnemies();
 
 	for (int i = 0; i < maxEnemies - 1; i++)
 	{

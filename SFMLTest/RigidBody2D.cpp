@@ -35,11 +35,7 @@ void RigidBody2D::initializeVariables(float mass, Vector2D ownForce, Vector2D ma
 		acceleration.y = 0;
 	}
 
-	//this->netForce = this->ownForce.x - this->fF;
-
-	///*TEST acceleration*/ this->acceleration = 1.f;
 	this->maxVelocity = maxVelocity;
-	//this->maxVelocity = 
 
 	this->moveDirectionX = 0;
 }
@@ -55,9 +51,6 @@ Vector2D RigidBody2D::moveDirectionSpeed(Vector2D currentVelocity, int direction
 	this->currentVelocity.x = currentVelocity.x;		//IN DE MIN ALS JE NAAR LINKS GAAT
 	this->moveDirectionX = direction;
 
-	/*std::cout << this->mass << std::endl;
-	std::cout << this->ownForce << std::endl;			//DEBUGGING
-	std::cout << this->acceleration << std::endl;*/
 
 	if (this->moveDirectionX == 0)
 	{
@@ -82,29 +75,9 @@ Vector2D RigidBody2D::moveDirectionSpeed(Vector2D currentVelocity, int direction
 		else
 			this->currentVelocity.y = maxVelocity.y;
 
-	/*if (this->ownForce > this->fF)
-	{
-		this->netForce = this->ownForce - this->fF;
-
-		this->acceleration = this->netForce / this->mass;
-	}
-	else	//als "ownForce" minder is dan "frictie ownForce" dan is acceleratie "0", waardoor "velocity" constant is
-	{
-		this->acceleration = 0;
-	}*/															//Later pas nuttig; als er "drag" bij wordt toegevoegt
-
 	return this->currentVelocity;
 }
 
-/*float RigidBody2D::enemyMoveDownSpeed(float currentVelocity)
-{
-	if (this->currentVelocity.y > -maxVelocity.x)
-		this->currentVelocity.y -= acceleration.y;
-	else
-		this->currentVelocity.y = -maxVelocity.y;
-
-	return this->currentVelocity.y;
-}*/
 
 float RigidBody2D::moveDirectionStopping(Vector2D currentVelocity, int movingDirection, int wallHit)		//beweeg met "ownForce" tegen "frictie ownForce"	returned "speed"
 {
@@ -136,11 +109,6 @@ float RigidBody2D::moveDirectionStopping(Vector2D currentVelocity, int movingDir
 float RigidBody2D::bounceAgainstWall(Vector2D currentVelocity, int slipDircetion)
 {
 	this->moveDirectionX = slipDircetion;
-
-	/*if (this->currentVelocity.x < 0 && slipDircetion == 0)
-		this->currentVelocity.x = -this->currentVelocity.x * (1.f - 0.15f);		//"0.15f" = force lost bij stuiteren tegen de muur
-	else if (this->currentVelocity.x > 0 && slipDircetion == 1)
-		this->currentVelocity.x = -this->currentVelocity.x * (1.f - 0.15f);*/		//"0.15f" = force lost bij stuiteren tegen de muur
 
 	if ((this->currentVelocity.x < 0 && slipDircetion == 0) || (this->currentVelocity.x > 0 && slipDircetion == 1))
 		this->currentVelocity.x = -this->currentVelocity.x * (1.f - this->forceLostOnBounce);
