@@ -6,11 +6,14 @@
 class Enemy
 {
 private:
-	int textureRectEnemyPositionXYSize;
-	float spriteEnemyXYSize;		//van spritesheet; grootte per plaatje is 16x16
-	float shapeEnemyXYSize;		//hitbox. "setScale" en "setSize" zijn floats
-	float massEnemy;
+	//int textureRectEnemyPositionXYSize;
+	//float spriteEnemyXYSize;		//van spritesheet; grootte per plaatje is 16x16
+	//float shapeEnemyXYSize;		//hitbox. "setScale" en "setSize" zijn floats
+	const float visualXYSizePlayer = 100.f;
+	const float massEnemy = 2.f;
 	const float yPositionSpawn = -100.f;
+
+	const int randomChangeDirection = 600;	//determines how bit the chance is to change direction (per frame)
 
 	const Vector2D forceEnemy = Vector2D(40.f, 4.f);
 	Vector2D currentVelocityEnemy;
@@ -47,8 +50,8 @@ public:
 	bool hasEnemySpawnedCheck();
 	void enemySpawn(float randomXPosition);
 	void updateMovement();
-	void updateWindowBoundsCollision(const sf::RenderTarget* target);
-	void update(const sf::RenderTarget* target);
+	void updateWindowBoundsCollision();
+	void update();
 	void render(sf::RenderTarget* target);
 
 };

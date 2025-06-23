@@ -6,10 +6,10 @@
 class Player
 {
 private:
-	int textureRectPlayerPositionXYSize;
-	float spritePlayerXYSize;		//van spritesheet; grootte per plaatje is 16x16
-	float shapePlayerXYSize;		//hitbox. "setScale" en "setSize" zijn floats
-	float massPlayer;
+	const int textureRectPlayerPositionXYSize = 16;
+	const float spritePlayerXYSize = 10.f;		//van spritesheet; grootte per plaatje is 16x16
+	const float shapePlayerXYSize = 64.f;		//hitbox. "setScale" en "setSize" zijn floats
+	const float massPlayer = 5.f;
 	const Vector2D forcePlayer = Vector2D(140.f, 0.f);
 	Vector2D currentVelocityPlayer;
 	const Vector2D maxVelocityPlayer = Vector2D(30.f, 0.f);
@@ -18,7 +18,7 @@ private:
 
 	int currentDirection;
 	int currentSpriteMoveFrame;		//tussen "0" en "1" is loop animatie
-	float changeSpriteAnimationMaxTimer;
+	const float changeSpriteAnimationMaxTimer = 10.f;
 	float changeSpriteAnimationTimer;
 
 	int currentAntiJitterPosition;
@@ -28,14 +28,14 @@ private:
 
 	sf::Texture playerTexture;
 	sf::Sprite playerSprite;
-	sf::RectangleShape playerShape;
+	//sf::RectangleShape playerShape;
 
 	RigidBody2D rigidBodyPlayer;
 
 	//Private Functions
 	void shapeAndSpritePosition(float x, float y);
 	void initializeVariables();
-	void initializeShape();
+	//void initializeShape();
 	void initializeSprite();
 	void directionChangeSprite(int direction = 0.f);	//zit in "updateInput" om richting te bepalen
 	void updateSprite(bool moving = false);		//zit in "updateInput" om de animatie te bepalen

@@ -36,6 +36,9 @@
     <ClCompile Include="Body.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="UniversalValues.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -55,6 +58,9 @@
     </ClInclude>
     <ClInclude Include="Body.h">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UniversalValues.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

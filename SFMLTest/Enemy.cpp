@@ -8,7 +8,7 @@ void Enemy::initializeVariables()
 
 	//PlayerRigidBodyVariables
 	//this->forceEnemy = Vector2D(20.f, 1.f);
-	this->massEnemy = 2.f;
+	//this->massEnemy = 2.f;
 	this->currentVelocityEnemy.x = 0.f;
 	//this->maxVelocityEnemy.x = 30.f;
 
@@ -28,10 +28,10 @@ void Enemy::initializeVariables()
 void Enemy::initializeShape()
 {
 	this->enemyShape.setPosition(10.f, 10.f);
-	this->enemyShape.setSize(sf::Vector2f(100.f, 100.f));
+	this->enemyShape.setSize(sf::Vector2f(this->visualXYSizePlayer, this->visualXYSizePlayer));
 	this->enemyShape.setScale(sf::Vector2f(collisionSizeEnemy.x, collisionSizeEnemy.y));
 	this->enemyShape.setFillColor(sf::Color(0, 255, 255));
-	this->enemyShape.setOrigin(sf::Vector2f(100.f * 0.5f, 0.f));	//positie in het midden (voor "mirror" in animatie)
+	this->enemyShape.setOrigin(sf::Vector2f(this->visualXYSizePlayer * 0.5f, 0.f));	//positie in het midden (voor collision)
 
 }
 
@@ -108,6 +108,15 @@ void Enemy::updateMovement()
 
 		if (this->wallHit == true)
 			this->wallHit = false;
+		else
+		{
+			int chanceToChangeDirection;
+			chanceToChangeDirection = rand() % randomChangeDirection;
+			if (chanceToChangeDirection == 1)
+			{
+				this->movingDirection = 1;
+			}
+		}
 	}
 	else if (this->movingDirection == 1)	//Right
 	{
@@ -133,6 +142,15 @@ void Enemy::updateMovement()
 
 		if (this->wallHit == true)
 			this->wallHit = false;
+		else
+		{
+			int chanceToChangeDirection;
+			chanceToChangeDirection = rand() % randomChangeDirection;
+			if (chanceToChangeDirection == 0)
+			{
+				this->movingDirection = 0;
+			}
+		}
 	}
 
 	//bodyEnemy.currentPosition.y += 1.f;
@@ -141,12 +159,13 @@ void Enemy::updateMovement()
 }
 
 
-void Enemy::updateWindowBoundsCollision(const sf::RenderTarget* target)
+void Enemy::updateWindowBoundsCollision()
 {
 	//Left
 	//sf::Vector2f playerPosition = this->enemyShape.getPosition();	//eigen vector2 maken
-	if (bodyEnemy.currentPosition.x <= 0.f)
+	if (bodyEnemy.currentPosition.x - collisionSizeEnemy.x * 0.5f <= 0.f)	//most left side of the screen
 	{
+		//std::cout << bodyEnemy.currentPosition.x << std::endl;
 		this->wallHit = true;
 		int slipDirection = 0;
 		this->currentVelocityEnemy.x = rigidBodyEnemy.bounceAgainstWall(this->currentVelocityEnemy, slipDirection);
@@ -157,7 +176,7 @@ void Enemy::updateWindowBoundsCollision(const sf::RenderTarget* target)
 		bodyEnemy.currentPosition.y += this->currentVelocityEnemy.y;
 		//std::cout << currentPosition.x << std::endl;
 	}//Right
-	else if (bodyEnemy.currentPosition.x + collisionSizeEnemy.x > 1920.f)	// + SIZE LATER
+	else if (bodyEnemy.currentPosition.x + collisionSizeEnemy.x * 0.5f > 1920.f)	//most right side of the screen
 	{
 		this->wallHit = true;
 		int slipDirection = 1;
@@ -173,12 +192,12 @@ void Enemy::updateWindowBoundsCollision(const sf::RenderTarget* target)
 }
 
 
-void Enemy::update(const sf::RenderTarget* target)
+void Enemy::update()
 {
 	if (enemySpawned == false)
 		return;
 
-	updateWindowBoundsCollision(target);
+	updateWindowBoundsCollision();
 
 	updateMovement();
 
@@ -193,5 +212,6 @@ void Enemy::update(const sf::RenderTarget* target)
 void Enemy::render(sf::RenderTarget* target)
 {
 	if (enemySpawned)
-		target->draw(this->enemyShape);
+		if (target != NULL)
+			target->draw(this->enemyShape);
 }

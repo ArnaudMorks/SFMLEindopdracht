@@ -11,7 +11,7 @@ void RigidBody2D::initializeVariables(float mass, Vector2D ownForce, Vector2D ma
 	this->FN = -this->Fw;
 	this->fF = this->Mu * this->FN;
 
-
+	//X
 	if ((this->ownForce.x - this->fF) > 0)
 	{
 		this->mA = this->ownForce.x - this->fF;	//massa acceleratie
@@ -22,6 +22,19 @@ void RigidBody2D::initializeVariables(float mass, Vector2D ownForce, Vector2D ma
 		mA = 0;
 		acceleration.x = 0;
 	}
+
+	//Y
+	if ((this->ownForce.y - this->fF) > 0)
+	{
+		this->mA = this->ownForce.y - this->fF;	//massa acceleratie
+		this->acceleration.y = this->mA / this->mass * deltaTime;
+	}
+	else
+	{
+		mA = 0;
+		acceleration.y = 0;
+	}
+
 	//this->netForce = this->ownForce.x - this->fF;
 
 	///*TEST acceleration*/ this->acceleration = 1.f;
@@ -37,7 +50,6 @@ RigidBody2D::RigidBody2D()
 }
 
 
-//Only for "X" axis FOR NOW
 Vector2D RigidBody2D::moveDirectionSpeed(Vector2D currentVelocity, int direction)		//beweeg met "ownForce" tegen "frictie ownForce"	returned "speed"
 {
 	this->currentVelocity.x = currentVelocity.x;		//IN DE MIN ALS JE NAAR LINKS GAAT
@@ -84,7 +96,7 @@ Vector2D RigidBody2D::moveDirectionSpeed(Vector2D currentVelocity, int direction
 	return this->currentVelocity;
 }
 
-float RigidBody2D::enemyMoveDownSpeed(float currentVelocity)
+/*float RigidBody2D::enemyMoveDownSpeed(float currentVelocity)
 {
 	if (this->currentVelocity.y > -maxVelocity.x)
 		this->currentVelocity.y -= acceleration.y;
@@ -92,7 +104,7 @@ float RigidBody2D::enemyMoveDownSpeed(float currentVelocity)
 		this->currentVelocity.y = -maxVelocity.y;
 
 	return this->currentVelocity.y;
-}
+}*/
 
 float RigidBody2D::moveDirectionStopping(Vector2D currentVelocity, int movingDirection, int wallHit)		//beweeg met "ownForce" tegen "frictie ownForce"	returned "speed"
 {

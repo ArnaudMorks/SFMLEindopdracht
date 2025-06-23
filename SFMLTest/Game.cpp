@@ -11,13 +11,12 @@ void Game::initializeVariables()
 	this->enemySpawnTimer = this->enemyMaxSpawnTimer;
 	this-> timerSpeedUpInterval = 8.f;
 	this-> timerSpeedupTimer;
-	this-> spawnRateUpAmount = 0.8f;
 
 	this->maxEnemies = 30;
 	//this->hittable = true;
 	//this->mouseHeld = false;
-	this->timeToWin = 80.f;	//tijd in seconden
-	this->timePassed = 0.f;
+	//this->timeToWin = 80.f;	//tijd in seconden
+	//this->timePassed = 0.f;
 	this->win = false;
 	this->lost = false;
 
@@ -32,13 +31,14 @@ void Game::initializeVariables()
 
 void Game::initializeWindow()
 {
-	this->videoMode.width = 1920;
-	this->videoMode.height = 1080;
+	this->videoMode.width = screenSize.x;
+	this->videoMode.height = screenSize.y;
 
 	this->windowPointer = new sf::RenderWindow(this->videoMode, "Snowman Dodge",
 		sf::Style::Fullscreen | sf::Style::Close);
 
-	this->windowPointer->setFramerateLimit(60);			//FRAME RATE
+	if (this->windowPointer != NULL)
+		this->windowPointer->setFramerateLimit(this->frameRate);			//FRAME RATE
 }
 
 void Game::initializeSprite()
@@ -99,13 +99,17 @@ Game::~Game()
 //Accessors
 const bool Game::running() const
 {
-	return this->windowPointer->isOpen();
+	if (this->windowPointer != NULL)
+		return this->windowPointer->isOpen();
 }
 
 //Functions
 void Game::pollEvents()
 {
 	//Event polling
+	if (this->windowPointer == NULL)
+		return;
+
 	while (this->windowPointer->pollEvent(this->myEvent))		//Slaat inputs op, om ze vervolgens te gebruiken (inputs bijv.)
 	{
 		switch (this->myEvent.type)
@@ -143,9 +147,9 @@ void Game::enemySpawnerUpdate()
 		{
 			i++;
 		}
-		if (i < maxEnemies - 1)
+		if (i < maxEnemies - 1 && this->windowPointer != NULL)
 			this->enemies[i].enemySpawn(static_cast<float>(rand()
-				% static_cast<int>(this->windowPointer->getSize().x - 1.f)));	//random "X" positie CHANGE
+				% static_cast<int>(this->windowPointer->getSize().x - 1.f)));	//random "X" position CHANGE
 
 		this->enemySpawnTimer = 0.f;
 	}
@@ -154,7 +158,7 @@ void Game::enemySpawnerUpdate()
 
 	if (this->timerSpeedupTimer < this->timerSpeedUpInterval)
 	{
-		this->timerSpeedupTimer += 1.f * 0.0167f;
+		this->timerSpeedupTimer += 1.f * this->deltaTime;
 	}
 	else
 	{
@@ -167,7 +171,7 @@ void Game::enemySpawnerUpdate()
 
 void Game::updateCollision()
 {
-	//Check the collision
+	//Check collision between enemies and player
 	for (int i = 0; i < maxEnemies - 1; i++)
 	{
 		/*if (this->player.getPlayerShape().getGlobalBounds()			//ORIGINAL COLLISION
@@ -188,6 +192,7 @@ void Game::updateCollision()
 			&& (this->player.bodyPlayer.currentPosition.y + sizePlayer.y * 0.5f
 				- this->enemies[i].enemyBody.currentPosition.y > -10))*/
 
+		//Keeps checking; maybe in a later version these values will change during playtime
 		Vector2D sizePlayer = this->player.collisionSizePlayer;
 		Vector2D sizeEnemy = this->enemies[i].collisionSizeEnemy;
 
@@ -221,7 +226,7 @@ void Game::updateCollision()
 			}
 		}*/
 
-		if (this->enemies[i].bodyEnemy.currentPosition.y > 1080)
+		if (this->enemies[i].bodyEnemy.currentPosition.y > screenSize.y)
 		{
 			if (enemies[i].hasEnemySpawnedCheck() == true)
 			{
@@ -237,6 +242,7 @@ void Game::updateCollision()
 }
 
 
+//Also checks if you win or lose the game
 void Game::updateText()
 {
 	std::stringstream stringStream;
@@ -244,17 +250,20 @@ void Game::updateText()
 	stringStream << "Points: " << this->points;
 
 	this->uiText.setString(stringStream.str());
+
+	if (this->points >= this->pointsToWin)
+		win = true;
 }
 
 
-void Game::updateTimeToWin()
+/*void Game::updateTimeToWin()
 {
 	this->timePassed += (1 * 0.0167f);
 	//std::cout << this->timePassed << std::endl;
 
 	if (timePassed > timeToWin)
 		win = true;
-}
+}*/
 
 void Game::update()
 {
@@ -264,7 +273,7 @@ void Game::update()
 	if (lost || win)
 		return;
 
-	this->updateTimeToWin();
+	//this->updateTimeToWin();
 
 	this->updateText();
 
@@ -277,7 +286,7 @@ void Game::update()
 	{
 		if (this->enemies[i].hasEnemySpawnedCheck() == true)
 		{
-			this->enemies[i].update(this->windowPointer);
+			this->enemies[i].update();
 		}
 	}
 

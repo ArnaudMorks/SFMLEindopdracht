@@ -8,6 +8,7 @@
 #include <sstream>
 #include <ctime>
 #include "Vector2D.h"
+//#include "UniversalValues.h"
 
 
 class RigidBody2D
@@ -28,6 +29,8 @@ private:
 	Vector2D currentVelocity;
 	Vector2D maxVelocity;
 
+	//UniversalValues universalValues;
+
 	int moveDirectionX;
 
 	const float forceLostOnBounce = 0.15f;
@@ -42,7 +45,7 @@ public:
 	//dit wegens "Warning C26495"
 	void initializeVariables(float mass, Vector2D ownForce, Vector2D maxVelocity);		//defaults	sommige variables komen vanuit "Player"
 	Vector2D moveDirectionSpeed(Vector2D currentVelocity, int direction = 2);		//default "2"; "2" = niet bewegen
-	float enemyMoveDownSpeed(float currentVelocityY);
+	//float enemyMoveDownSpeed(float currentVelocityY);
 	float moveDirectionStopping(Vector2D currentVelocity = Vector2D(0.f, 0.f), int movingDirection = 0, int wallHit = 0);		//default "2"; "2" = niet bewegen
 	float bounceAgainstWall(Vector2D currentVelocity, int slipDircetion);
 

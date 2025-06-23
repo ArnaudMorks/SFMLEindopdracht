@@ -35,17 +35,23 @@ private:
 
 	//Game logic
 	unsigned points;
+	unsigned const pointsToWin = 30;
 	float enemySpawnTimer;
 	float enemyMaxSpawnTimer;
 	float timerSpeedUpInterval;
 	float timerSpeedupTimer;
-	float spawnRateUpAmount;	//bijv. "0.8f"
+	const float spawnRateUpAmount = 0.8f;	//bijv. "0.8f"
+
+	const int frameRate = 60;
+	const float deltaTime = 0.0167;
+
+	const Vector2D screenSize = Vector2D(1920, 1080);
 
 	int maxEnemies;
-	bool hittable;			//WERKT NOG NIET
+	//bool hittable;			//WERKT NOG NIET
 	//bool mouseHeld;
-	float timeToWin;
-	float timePassed;
+	//float timeToWin;
+	//float timePassed;
 	bool win;
 	bool lost;
 
@@ -84,7 +90,7 @@ public:
 	void updateCollision();
 	//void updateEnemies();
 	void updateText();
-	void updateTimeToWin();
+	//void updateTimeToWin();
 	void update();
 
 	//void renderEnemies();

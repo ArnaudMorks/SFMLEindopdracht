@@ -2,16 +2,15 @@
 
 void Player::initializeVariables()
 {
-	this->textureRectPlayerPositionXYSize = 16;
-	this->spritePlayerXYSize = 10.f;		//"spritePlayerXYSize" bepaalt "shapePlayerXYSize" omdat "spritePlayerXYSize" altijd groter moet zijn
+	//this->textureRectPlayerPositionXYSize = 16;
+	//this->spritePlayerXYSize = 10.f;		//"spritePlayerXYSize" bepaalt "shapePlayerXYSize" omdat "spritePlayerXYSize" altijd groter moet zijn
 	//Oud systeem om grootte van "sprite" en "shape" gelijk te maken
-	//this->shapePlayerXYSize = spritePlayerXYSize * textureRectPlayerPositionXYSize;	//"float * int" converts "int" to float
-	this->shapePlayerXYSize = 64.f;
+	//this->shapePlayerXYSize = 64.f;
 
 	//PlayerRigidBodyVariables
 	//this->forcePlayer.x = 140.f;
 	bodyPlayer.forceObject = this->forcePlayer;
-	this->massPlayer = 5.f;
+	//this->massPlayer = 5.f;
 	this->currentVelocityPlayer.x = 0.f;
 	//this->maxVelocityPlayer.x = 30.f;
 
@@ -20,8 +19,8 @@ void Player::initializeVariables()
 	this->currentDirection = 0;	//"0" = links, "1" = rechts
 	this->currentSpriteMoveFrame = 0;
 	//Timer
-	this->changeSpriteAnimationMaxTimer = 10.f;		//delta time maybe later
-	this->changeSpriteAnimationTimer = this->changeSpriteAnimationTimer;
+	//this->changeSpriteAnimationMaxTimer = 10.f;		//delta time maybe later
+	this->changeSpriteAnimationTimer = this->changeSpriteAnimationTimer; //not working with delta time now
 
 	this->currentAntiJitterPosition = 0;
 
@@ -48,14 +47,14 @@ void Player::initializeSprite()
 	this->playerSprite.setOrigin(sf::Vector2f(textureRectPlayerPositionXYSize * 0.5f, 0.f));	//positie in het midden (voor "mirror" in animatie)
 }
 
-void Player::initializeShape()
+/*void Player::initializeShape()
 {
-	this->playerShape.setFillColor(sf::Color::Blue);
-	this->playerShape.setSize(sf::Vector2f(shapePlayerXYSize, shapePlayerXYSize));
+	//this->playerShape.setFillColor(sf::Color::Blue);
+	//this->playerShape.setSize(sf::Vector2f(shapePlayerXYSize, shapePlayerXYSize));
 	//Oude versie voor als "shape" net zo groot is als "sprite"
 	//this->playerShape.setOrigin(sf::Vector2f(shapePlayerXYSize * 0.5f, 0.f));
-	this->playerShape.setOrigin(sf::Vector2f(32.f, -40.f));
-}
+	//this->playerShape.setOrigin(sf::Vector2f(32.f, -40.f));
+}*/
 
 
 Player::Player(float x, float y)
@@ -64,7 +63,7 @@ Player::Player(float x, float y)
 
 	this->initializeVariables();
 	this->initializeSprite();
-	this->initializeShape();
+	//this->initializeShape();
 }
 
 Player::~Player()
@@ -74,7 +73,7 @@ Player::~Player()
 
 void Player::shapeAndSpritePosition(float x, float y)
 {
-	this->playerShape.setPosition(x, y);
+	//this->playerShape.setPosition(x, y);
 	this->playerSprite.setPosition(x, y);
 }
 
@@ -90,10 +89,10 @@ void Player::directionChangeSprite(int movingDirection)
 	}
 }
 
-const sf::RectangleShape& Player::getPlayerShape() const
+/*const sf::RectangleShape& Player::getPlayerShape() const
 {
 	return this->playerShape;
-}
+}*/
 
 
 void Player::updateSprite(bool moving)		//animation and movingDirection
@@ -249,7 +248,7 @@ void Player::updateInput()
 	}
 
 	this->playerSprite.setPosition(bodyPlayer.currentPosition.x, bodyPlayer.currentPosition.y);
-	this->playerShape.setPosition(bodyPlayer.currentPosition.x, bodyPlayer.currentPosition.y);
+	//this->playerShape.setPosition(bodyPlayer.currentPosition.x, bodyPlayer.currentPosition.y);
 
 	this->updateSprite(moving);
 	this->directionChangeSprite(visualMoveDirection);
@@ -260,7 +259,7 @@ void Player::updateWindowBoundsCollision()
 {
 	//Left
 	//sf::Vector2f playerPosition = this->playerShape.getPosition();	//eigen vector2 maken
-	if (bodyPlayer.currentPosition.x - collisionSizePlayer.x * 0.5f <= 0.f)
+	if (bodyPlayer.currentPosition.x - collisionSizePlayer.x * 0.5f <= 0.f)	//"0" = left most point of the screen
 	{
 		this->wallHit = true;
 		int slipDirection = 0;
@@ -272,7 +271,7 @@ void Player::updateWindowBoundsCollision()
 		bodyPlayer.currentPosition.x += this->currentVelocityPlayer.x;
 
 	}//Right
-	else if (bodyPlayer.currentPosition.x + collisionSizePlayer.x * 0.5f >= 1920)
+	else if (bodyPlayer.currentPosition.x + collisionSizePlayer.x * 0.5f >= 1920)	//"1920" = right most point of the screen
 	{
 		this->wallHit = true;
 		int slipDirection = 1;
@@ -300,6 +299,7 @@ void Player::update()
 void Player::render(sf::RenderTarget* target)
 {
 	//target->draw(this->playerShape);			//is er om te size te berekenen; moet onzichtbaar zijn; uitcommenten voor testen
-	target->draw(this->playerSprite);
+	if (target != NULL)
+		target->draw(this->playerSprite);
 }
 
